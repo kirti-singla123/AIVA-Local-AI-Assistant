@@ -126,6 +126,19 @@ Frontend/npm start
 
 ---
 
+### Screenshots
+
+#### Chat Interface
+![Chat Interface](Screenshots/Aiva chatbot.PNG)
+
+#### Example Conversation
+![Example Conversation](Screenshots/Conversation.PNG)
+
+#### Another Example
+![Conversation 1](Screenshots/conversation1.PNG)
+
+---
+
 ## 👩‍💻 Author
 
 **Kirti Singla**
