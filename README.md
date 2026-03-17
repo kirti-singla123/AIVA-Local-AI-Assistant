@@ -129,7 +129,7 @@ Frontend/npm start
 ### Screenshots
 
 #### Chat Interface
-![Chat Interface](Screenshots/Aiva chatbot.PNG)
+![Chat Interface](Screenshots/Aiva_chatbot.PNG)
 
 #### Example Conversation
 ![Example Conversation](Screenshots/Conversation.PNG)
