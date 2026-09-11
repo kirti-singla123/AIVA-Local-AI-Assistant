@@ -8,8 +8,8 @@
 
 /* Core Planet */
 .planet-core {
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   background: radial-gradient(circle at 30% 30%, #7df9ff, #4d9fff 60%, #001133);
   border-radius: 50%;
   position: absolute;
@@ -87,4 +87,28 @@
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
+}
+.orbit-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.dot1 {
+  background: #00eaff;
+  box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+}
+
+.dot2 {
+  background: #4d9fff;
+  box-shadow: 0 0 10px #4d9fff, 0 0 20px #4d9fff;
+}
+
+.dot3 {
+  background: #7df9ff;
+  box-shadow: 0 0 10px #7df9ff, 0 0 20px #7df9ff;
 }

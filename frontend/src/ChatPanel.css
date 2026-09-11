@@ -16,7 +16,6 @@
   position: relative;
 }
 
-/* ✅ SCROLL FIX ADDED */
 .chat-messages {
   flex: 1;
   display: flex;
@@ -27,7 +26,6 @@
   padding-right: 10px;
 }
 
-/* Optional nice scrollbar */
 .chat-messages::-webkit-scrollbar {
   width: 6px;
 }
@@ -94,7 +92,6 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* ✅ FIXED SYNTAX ERROR */
 .mic-btn {
   width: 55px;
   height: 55px;
@@ -153,7 +150,6 @@
     0 0 20px rgba(0, 150, 255, 0.6);
 }
 
-/* Listening waves */
 .listening-waves {
   position: absolute;
   left: 20px;
@@ -220,4 +216,60 @@
 @keyframes bounce {
   0%,100% { height: 25px; }
   50% { height: 60px; }
+}
+
+.call-btn {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 18px;
+  background: radial-gradient(
+    circle,
+    rgba(0, 240, 255, 0.8),
+    rgba(107, 43, 255, 0.8)
+  );
+  box-shadow:
+    0 0 12px rgba(0, 240, 255, 0.6),
+    0 0 22px rgba(107, 43, 255, 0.4);
+}
+
+.call-btn:hover {
+  background: rgba(0, 255, 255, 0.15);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* ✅ UPDATED: End Call button now matches the blue/cyan theme */
+.end-call-btn {
+  padding: 10px 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(0, 200, 255, 0.5);
+  background: rgba(0, 150, 255, 0.15);
+  color: #7df9ff;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.35);
+}
+
+.end-call-btn:hover {
+  background: rgba(0, 200, 255, 0.3);
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.55);
+}
+
+.call-container {
+  position: relative;
+  width: 90%;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  background: radial-gradient(
+    circle at center,
+    rgba(10, 20, 50, 0.35) 0%,
+    rgba(5, 8, 25, 0.45) 70%
+  );
 }

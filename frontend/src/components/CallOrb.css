@@ -1,0 +1,87 @@
+.call-orb-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== The orb, with 3 distinct visible color segments ===== */
+.call-orb-core {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    #00eaff 0deg,
+    #4d9fff 120deg,
+    rgba(107, 43, 255, 0.95) 240deg,
+    #00eaff 360deg
+  );
+  filter: saturate(1.4) brightness(1.05);
+  box-shadow:
+    0 0 40px rgba(0, 200, 255, 0.7),
+    0 0 80px rgba(107, 43, 255, 0.5);
+  animation: spherePulse 4s ease-in-out infinite, sphereFlow 9s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes orbPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes orbSpin {
+  from { filter: saturate(1.4) brightness(1.05) hue-rotate(0deg); }
+  to   { filter: saturate(1.4) brightness(1.05) hue-rotate(360deg); }
+}
+
+/* ===== Wave bars across the FULL screen width ===== */
+.wave-row {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6%;
+  z-index: 1;
+}
+
+.wave-row span {
+  width: 5px;
+  height: 14px;
+  border-radius: 3px;
+  background: linear-gradient(to top, #007bff, #7df9ff);
+  box-shadow: 0 0 6px rgba(0, 234, 255, 0.6);
+  animation: barMove 1.4s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes barMove {
+  0%, 100% { height: 10px; }
+  50% { height: 50px; }
+}
+
+/* ===== Only animate bars when actually listening/speaking ===== */
+.call-orb-wrapper.idle .wave-row span,
+.call-orb-wrapper.thinking .wave-row span {
+  animation-play-state: paused;
+  opacity: 0.15;
+}
+
+.call-orb-wrapper.listening .wave-row span,
+.call-orb-wrapper.speaking .wave-row span {
+  opacity: 1;
+}
+
+.call-orb-wrapper.speaking .call-orb-core {
+  animation-duration: 1.5s, 8s;
+}
+
+.call-orb-wrapper.thinking .call-orb-core {
+  filter: saturate(0.7) brightness(0.7);
+}

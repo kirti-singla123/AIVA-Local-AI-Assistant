@@ -2,50 +2,79 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.conf import settings
+from groq import Groq
 import json
 import requests
-import os
+from chat.memory_rag.vector_db import SimpleVectorDB
+from chat.memory_rag.pipeline import get_embedding
+
+rag_db = SimpleVectorDB()
+rag_db.load("chat/memory_rag/vector_store.json")
+
+# ✅ Set this to True to use local Ollama, False to use Groq API
+USE_LOCAL_OLLAMA = False
 
 @csrf_exempt
 def chat_view(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        user_message = data.get("message", "")
+        question = data.get("message", "")
 
-        # ✅ Get Real IST Time
-        current_time = timezone.localtime().strftime("%A, %d %B %Y, %I:%M %p")
+        client = Groq(api_key=settings.GROQ_API_KEY)
 
-        # ✅ If user explicitly asks for time/date
-        if any(word in user_message.lower() for word in ["time", "date", "today", "day"]):
-            return JsonResponse({
-                "response": f"The current time is {current_time} IST."
-            })
+        # Step 1: Classify the question
+        classify_prompt = f"""You are a router. Decide if this question is asking about a specific person's resume, background, identity, or professional profile — including things like their name, contact details, work history, education, skills, or certifications.
 
-        # ✅ Normal clean assistant behavior
-        prompt = f"""
-You are AIVA, a smart and friendly AI assistant.
-Reply naturally and conversationally.
+If the question could reasonably be answered by looking at that person's resume, answer "yes". Otherwise, answer "no".
+
+Answer with only one word: yes or no.
+
+Question: {question}
+"""
+        
+        classify_response = client.chat.completions.create(
+            messages=[{"role": "user", "content": classify_prompt}],
+            model="openai/gpt-oss-120b",
+        )
+        is_resume_related = classify_response.choices[0].message.content.strip().lower()
+
+        # Step 2: Route based on classification
+        if "yes" in is_resume_related:
+            question_embedding = get_embedding(question)
+            results = rag_db.search(question_embedding, top_k=10)
+            context = "\n".join([text for score, text in results])
+
+            prompt = f"""Answer the question using only the context below.
+
+Context:
+{context}
+
+Question: {question}
+"""
+        else:
+            prompt = f"""
+You are AIVA, a helpful AI assistant.
+Respond in a clear, natural, and professional tone.
+Do NOT use emojis, exclamation marks, or overly casual/affectionate language.
 Do NOT mention current date or time unless the user asks.
 
-User: {user_message}
+
+User: {question}
 Assistant:
 """
 
-        response = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": "gemma3:4b",
-                "prompt": prompt,
-                "stream": False
-            }
+        chat_completion = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="openai/gpt-oss-120b",
         )
-
-        result = response.json()
-        ai_reply = result.get("response", "").strip()
+        ai_reply = chat_completion.choices[0].message.content.strip()
 
         return JsonResponse({"response": ai_reply})
 
     return JsonResponse({"error": "Only POST allowed"})
+
+
 def home(request):
     return HttpResponse("""
     <html>
