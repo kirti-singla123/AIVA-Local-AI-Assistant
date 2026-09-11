@@ -1,84 +1,286 @@
-# 🤖 AIVA – Local AI Virtual Assistant
+# 🤖 AIVA – AI Virtual Assistant
 
-**AIVA (Artificial Intelligence Virtual Assistant)** is a locally running AI chatbot designed to demonstrate how modern **Large Language Models (LLMs)** can be integrated into a full-stack web application.
+**AIVA (Artificial Intelligence Virtual Assistant)** is a full-stack AI chatbot application built with **React.js, Django, Python, RAG, vector search, and LLM APIs**.
 
-The project combines a **React-based chat interface**, a **Django backend**, and a **local AI model powered by Ollama** to allow users to interact with an AI assistant directly from their system.
-
-Unlike cloud-based AI tools, AIVA runs **entirely on a local environment**, making it suitable for experimentation, learning, and private AI deployments.
+The project started as a locally running AI assistant using **Ollama and a local LLM** and has evolved into a **Retrieval-Augmented Generation (RAG) based AI assistant** capable of answering questions using information retrieved from documents.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Interactive AI chatbot interface  
-- ✅ Local LLM integration using **Ollama**  
-- ✅ Powered by **Gemma 3.4B model**  
-- ✅ Full-stack architecture with **React + Django**  
-- ✅ Real-time question and answer interaction  
-- ✅ Local AI processing without external AI services  
+* ✅ Interactive AI chatbot interface
+* ✅ React-based modern chat UI
+* ✅ Django REST API backend
+* ✅ LLM integration using **Groq**
+* ✅ Retrieval-Augmented Generation (RAG)
+* ✅ PDF document processing
+* ✅ Automatic text extraction from PDFs
+* ✅ Text chunking for document processing
+* ✅ Semantic embeddings using **Sentence Transformers**
+* ✅ `all-MiniLM-L6-v2` embedding model
+* ✅ Local vector database implementation
+* ✅ Cosine similarity based semantic search
+* ✅ Retrieves relevant document chunks before generating an answer
+* ✅ Context-aware AI responses
+* ✅ Environment variable based API configuration
+* ✅ Full-stack React + Django architecture
 
 ---
 
-## 🧠 Technologies Used
+## 🧠 How AIVA Works
 
-### Frontend
-- React.js
-- JavaScript
-- HTML
-- CSS
+AIVA uses a **Retrieval-Augmented Generation (RAG)** pipeline.
 
-### Backend
-- Python
-- Django
-- Django REST Framework
+Instead of sending the entire document directly to the LLM, the application first converts the document into searchable vector embeddings.
 
-### AI / LLM
-- Ollama
-- Gemma 3.4B Model
+When the user asks a question:
 
-### Tools
-- Git
-- GitHub
-- REST APIs
+1. The question is converted into an embedding.
+2. The vector database searches for the most relevant document chunks.
+3. The relevant chunks are added to the prompt as context.
+4. Groq's LLM generates an answer using the retrieved context.
+5. The answer is returned to the React frontend.
+
+This allows AIVA to answer questions based on the information stored in its documents.
 
 ---
 
-## 🏷️ Keywords & Technologies
+# 🔄 RAG Architecture
 
-**AI**, **Chatbot**, **LLM**, **Local AI**, **Ollama**, **Gemma 3.4B**, **Django**, **React**, **Python**, **Full-Stack**
+## 1️⃣ Document Ingestion Pipeline
 
-## ⚙️ System Architecture
-
+```text
+PDF Document
+     ↓
+PDF Text Extraction
+     ↓
+Text Chunking
+     ↓
+all-MiniLM-L6-v2
+     ↓
+Vector Embeddings
+     ↓
+Vector Database
+     ↓
+vector_store.json
 ```
-User
- ↓
-React Frontend (Chat Interface)
- ↓
-Django Backend (API Layer)
- ↓
-Ollama Runtime
- ↓
-Gemma 3.4B Language Model
- ↓
-AI Response
-```
 
-The **React frontend** captures user input and sends it to the **Django backend API**.  
-The backend communicates with the **Ollama runtime**, which processes the request using the **Gemma 3.4B model** and returns the generated response back to the user interface.
+The document is processed once and its embeddings are stored in the vector database.
 
 ---
 
-## 📁 Project Structure
+## 2️⃣ Question / Query Pipeline
 
+```text
+User Question
+     ↓
+React Frontend
+     ↓
+Django Backend
+     ↓
+all-MiniLM-L6-v2
+     ↓
+Question Embedding
+     ↓
+Cosine Similarity Search
+     ↓
+Top Relevant Chunks
+     ↓
+Context
+     ↓
+Groq LLM
+     ↓
+AI Answer
+     ↓
+React Frontend
 ```
-AIVA
+
+The **same embedding model** (`all-MiniLM-L6-v2`) is used for both document chunks and user questions so they exist in the same embedding space.
+
+---
+
+# 🧩 Technologies Used
+
+## Frontend
+
+* React.js
+* JavaScript
+* HTML
+* CSS
+* npm
+
+## Backend
+
+* Python
+* Django
+* Django REST Framework
+* SQLite
+* Gunicorn
+
+## AI / RAG
+
+* Retrieval-Augmented Generation (RAG)
+* Groq API
+* Sentence Transformers
+* `all-MiniLM-L6-v2`
+* Vector embeddings
+* Cosine similarity
+* Local vector database
+* PDF text extraction using `pypdf`
+
+## Earlier Local AI Implementation
+
+The initial version of AIVA used:
+
+* Ollama
+* Local LLM
+* Local AI processing
+
+The project was later enhanced to use a RAG architecture with **Sentence Transformers for embeddings** and **Groq for LLM inference**.
+
+## Tools
+
+* Git
+* GitHub
+* VS Code
+* REST APIs
+* Environment variables
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                    ┌─────────────────────┐
+                    │     User / Browser   │
+                    └──────────┬──────────┘
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │   React Frontend    │
+                    │      Chat UI        │
+                    └──────────┬──────────┘
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │   Django Backend    │
+                    │      REST API       │
+                    └──────────┬──────────┘
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │ Sentence Transformer│
+                    │ all-MiniLM-L6-v2    │
+                    └──────────┬──────────┘
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │   Vector Database   │
+                    │  Cosine Similarity  │
+                    └──────────┬──────────┘
+                               │
+                         Relevant Context
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │      Groq LLM       │
+                    │   Answer Generation │
+                    └──────────┬──────────┘
+                               │
+                               ↓
+                    ┌─────────────────────┐
+                    │   React Frontend    │
+                    │    AI Response      │
+                    └─────────────────────┘
+```
+
+---
+
+# 📚 RAG Implementation
+
+AIVA contains a simple custom vector database implementation.
+
+The document ingestion pipeline:
+
+```python
+PDF
+→ Text Extraction
+→ Chunking
+→ Embedding
+→ Vector Storage
+```
+
+The application uses:
+
+```text
+Sentence Transformers
+        +
+all-MiniLM-L6-v2
+```
+
+to generate numerical vector representations of text.
+
+The vectors are stored in:
+
+```text
+vector_store.json
+```
+
+When a user asks a question, the same embedding model converts the question into a vector.
+
+The application then calculates **cosine similarity** between the question vector and stored document vectors.
+
+The most relevant chunks are retrieved and provided to the Groq LLM as context.
+
+---
+
+# 📁 Project Structure
+
+```text
+AIVA-Local-AI-Assistant
 │
 ├── backend
-│   ├── Django project
-│   └── chat application
+│   │
+│   ├── aiva_backend
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── ...
+│   │
+│   ├── chat
+│   │   │
+│   │   ├── memory_rag
+│   │   │   ├── data
+│   │   │   │   └── PDF document
+│   │   │   │
+│   │   │   ├── pipeline.py
+│   │   │   ├── ask.py
+│   │   │   ├── vector_db.py
+│   │   │   └── vector_store.json
+│   │   │
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   └── ...
+│   │
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── .env
+│   └── .gitignore
 │
 ├── frontend
-│   └── React chat interface
+│   │
+│   ├── src
+│   │   ├── components
+│   │   │   ├── ChatPanel.js
+│   │   │   ├── ChatPanel.css
+│   │   │   ├── PlanetOrb.jsx
+│   │   │   ├── PlanetOrb.css
+│   │   │   ├── CallOrb.jsx
+│   │   │   └── CallOrb.css
+│   │   │
+│   │   └── ...
+│   │
+│   ├── package.json
+│   └── package-lock.json
 │
 ├── .gitignore
 └── README.md
@@ -86,50 +288,264 @@ AIVA
 
 ---
 
-## 🎯 Project Goal
+# ⚙️ Environment Variables
 
-This project explores how **locally hosted AI models** can be integrated into modern web applications using a **full-stack architecture**.
+API credentials are stored using environment variables rather than hardcoded in the source code.
 
-The project demonstrates:
+Example:
 
-- Integration of **local LLMs** with web applications  
-- Building a **chat-based AI interface**  
-- API communication between **frontend and backend systems**  
-- Combining **AI with full-stack web development**
+```text
+GROQ_API_KEY=your_api_key_here
+```
+
+**Never commit real API keys or secrets to GitHub.**
 
 ---
 
-## 🚀 How to Run Locally
+# 🚀 How to Run Locally
 
-1. Clone this repo:
+## 1. Clone the repository
 
+```bash
+git clone https://github.com/kirti-singla123/AIVA-Local-AI-Assistant.git
+```
 
-git clone https://github.com/kirti-singla123/AIVA-Local-AI-Assistant
+```bash
+cd AIVA-Local-AI-Assistant
+```
 
+---
 
-2. Install dependencies:
+## 2. Backend Setup
 
+Navigate to the backend:
 
+```bash
+cd backend
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+```
+
+Windows:
+
+```powershell
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
-
-
-3. Make sure you have **Ollama installed** and **Gemma 3.4B model downloaded**.
-
-4. Run the backend and frontend:
-
-
-Backend/manage.py runserver
-Frontend/npm start
-
-
-5. Open the chat in your browser and interact with AIVA!
+```
 
 ---
 
-### Screenshots
+## 3. Configure Environment Variables
 
-#### Chat Interface
+Create a `.env` file inside the backend directory:
+
+```text
+GROQ_API_KEY=your_api_key_here
+```
+
+---
+
+## 4. Run Django Backend
+
+```bash
+python manage.py runserver
+```
+
+The backend will run locally through Django's development server.
+
+---
+
+## 5. Run React Frontend
+
+Open another terminal and navigate to:
+
+```bash
+cd frontend
+```
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+Start React:
+
+```bash
+npm start
+```
+
+---
+
+# 🧪 Testing the RAG Pipeline
+
+The RAG pipeline can be tested independently from the command line.
+
+### Document ingestion
+
+```bash
+python -m chat.memory_rag.pipeline
+```
+
+This:
+
+* Reads the PDF
+* Extracts text
+* Creates chunks
+* Generates embeddings
+* Stores vectors
+* Saves the vector database
+
+### Question answering
+
+```bash
+python -m chat.memory_rag.ask
+```
+
+The application then:
+
+* Loads the saved vector database
+* Converts the user's question into an embedding
+* Searches for relevant chunks
+* Sends the retrieved context to Groq
+* Generates an AI response
+
+---
+
+# ☁️ Deployment
+
+The planned deployment architecture is:
+
+```text
+React Frontend
+      ↓
+   Netlify
+      ↓
+Django Backend
+      ↓
+   Render
+      ↓
+Sentence Transformers
+all-MiniLM-L6-v2
+      ↓
+Vector Database
+      ↓
+Groq API
+```
+
+The React frontend can be deployed separately from the Django backend.
+
+The backend uses `requirements.txt` to install the required Python dependencies, including:
+
+```text
+Django
+sentence-transformers
+torch
+pypdf
+groq
+gunicorn
+```
+
+The `all-MiniLM-L6-v2` model is loaded by the Python application through Sentence Transformers.
+
+---
+
+# 🎯 Project Goals
+
+AIVA demonstrates how modern AI capabilities can be combined with full-stack development.
+
+The project explores:
+
+* Full-stack AI application development
+* React + Django integration
+* REST APIs
+* LLM integration
+* Retrieval-Augmented Generation
+* Vector embeddings
+* Semantic search
+* Document-based question answering
+* Local AI experimentation
+* AI application architecture
+
+---
+
+# 🔮 Future Improvements
+
+Possible future enhancements include:
+
+* 🔹 Multiple document support
+* 🔹 Better document chunking strategies
+* 🔹 Persistent production vector database
+* 🔹 Conversation memory
+* 🔹 Streaming AI responses
+* 🔹 User authentication
+* 🔹 More advanced RAG pipelines
+* 🔹 Reranking of retrieved documents
+* 🔹 AI agents and tool calling
+* 🔹 MCP integration
+* 🔹 Cloud deployment and scaling
+* 🔹 Improved RAG evaluation and security
+
+---
+
+# 📸 Screenshots
+
+## Chat Interface
+
 ![Chat Interface](Screenshots/Aiva_chatbot.PNG)
+
+## RAG Question Answering
+
+Add screenshots showing questions being answered using information retrieved from the document.
+
+---
+
+# 🔄 Evolution of AIVA
+
+AIVA initially used **Ollama with the Gemma 3.4B model** for local LLM inference.
+
+The architecture was later upgraded to use the **Groq API for LLM inference** and **Sentence Transformers with the `all-MiniLM-L6-v2` model for embeddings**.
+
+### Technology Evolution
+
+```text
+LLM:
+Ollama + Gemma 3.4B
+        ↓
+Groq API + LLM
+
+Embeddings:
+Ollama + Nomic Embedding Model
+        ↓
+Sentence Transformers + all-MiniLM-L6-v2
+```
+
+This evolution transformed AIVA from a locally hosted AI chatbot into a **RAG-based full-stack AI application**.
+
+
+# 👩‍💻 Author
+
+**Kirti Singla**
+
+Full Stack Developer
+
+**Python • Django • React • AI • RAG**
+
+---
+
+## 🏷️ Keywords
+
+**AI, Artificial Intelligence, Chatbot, LLM, RAG, Retrieval-Augmented Generation, Vector Database, Embeddings, Semantic Search, Sentence Transformers, all-MiniLM-L6-v2, Groq, Django, Django REST Framework, React, Python, Full Stack Development, AI Application, Document Q&A**
+
 
 #### Example Conversation
 ![Example Conversation](Screenshots/Conversation.PNG)
@@ -139,9 +555,3 @@ Frontend/npm start
 
 ---
 
-## 👩‍💻 Author
-
-**Kirti Singla**
-
-Full Stack Developer  
-Python • Django • React • AI Integration
