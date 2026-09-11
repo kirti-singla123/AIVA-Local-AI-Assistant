@@ -503,6 +503,12 @@ Possible future enhancements include:
 
 ![Chat Interface](Screenshots/Aiva_chatbot.PNG)
 
+#### Example Conversation
+![Example Conversation](Screenshots/Conversation.PNG)
+
+#### Another Example
+![Conversation 1](Screenshots/conversation1.PNG)
+
 ## RAG Question Answering
 
 Add screenshots showing questions being answered using information retrieved from the document.
@@ -545,13 +551,6 @@ Full Stack Developer
 ## 🏷️ Keywords
 
 **AI, Artificial Intelligence, Chatbot, LLM, RAG, Retrieval-Augmented Generation, Vector Database, Embeddings, Semantic Search, Sentence Transformers, all-MiniLM-L6-v2, Groq, Django, Django REST Framework, React, Python, Full Stack Development, AI Application, Document Q&A**
-
-
-#### Example Conversation
-![Example Conversation](Screenshots/Conversation.PNG)
-
-#### Another Example
-![Conversation 1](Screenshots/conversation1.PNG)
 
 ---
 
