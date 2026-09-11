@@ -1,9 +1,18 @@
 from pypdf import PdfReader
 from chat.memory_rag.vector_db import SimpleVectorDB
-from sentence_transformers import SentenceTransformer
 
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = None
+
+
+def get_model():
+    global model
+
+    if model is None:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    return model
 
 
 def read_pdf(filepath):
@@ -28,7 +37,7 @@ def chunk_text(text, lines_per_chunk=5):
 
 
 def get_embedding(text):
-    return model.encode(text).tolist()
+    return get_model().encode(text).tolist()
 
 
 if __name__ == "__main__":

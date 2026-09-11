@@ -26,8 +26,7 @@ SECRET_KEY = "django-insecure-gd3_n-1-i^-3zwnc(=y-iv30*!mavct3+&xfmiz3e=84nd+0lc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://aiva-backend-tilu.onrender.com"]
-
+ALLOWED_HOSTS = ["aiva-backend-tilu.onrender.com", "127.0.0.1", "localhost"]
 
 # Application definition
 
