@@ -4,8 +4,7 @@ import "./App.css";
 function App() {
   return (
     <div className="app">
-      <div className="header">AIVA</div>
-
+      <div className="aiva-header">AIVA</div>
       <div className="main-layout">
         <ChatPanel />
       </div>

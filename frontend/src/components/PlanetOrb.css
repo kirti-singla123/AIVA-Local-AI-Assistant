@@ -1,114 +1,256 @@
+.planet-scene {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 230px;
+perspective: 1000px;
+}
+
 .planet-wrapper {
-  position: relative;
-  width: 180px;
-  height: 180px;
-  margin: 0 auto;
-  perspective: 1000px;
+position: relative;
+width: 210px;
+height: 210px;
+margin: 0 auto;
+transform-style: preserve-3d;
+perspective: 1000px;
 }
 
-/* Core Planet */
+/* =========================
+CORE PLANET
+========================= */
+
 .planet-core {
-  width: 130px;
-  height: 130px;
-  background: radial-gradient(circle at 30% 30%, #7df9ff, #4d9fff 60%, #001133);
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow:
-    0 0 25px #00eaff,
-    0 0 60px #4d9fff,
-    inset -10px -10px 30px rgba(0,0,0,0.5);
+width: 155px;
+height: 155px;
+background: radial-gradient(
+circle at 30% 30%,
+#7df9ff,
+#4d9fff 60%,
+#001133
+);
+border-radius: 50%;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+box-shadow:
+0 0 25px #00eaff,
+0 0 60px #4d9fff,
+inset -10px -10px 30px rgba(0, 0, 0, 0.5);
+z-index: 5;
 }
 
-/* Base Orbit Ring */
+/* =========================
+BASE ORBIT RINGS
+========================= */
+
 .orbit {
-  position: absolute;
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform-style: preserve-3d;
-  border: 2px solid transparent;
+position: absolute;
+width: 210px;
+height: 210px;
+top: 50%;
+left: 50%;
+margin-left: -97.5px;
+margin-top: -97.5px;
+border-radius: 50%;
+border: 2px solid;
+transform-style: preserve-3d;
+transform-origin: center center;
 }
 
-/* Orbit 1 */
+/* =========================
+RING 1
+Standing / tilted
+========================= */
+
 .orbit1 {
-  border-top: 2px solid #00eaff;
-  border-left: 2px solid #00eaff;
-  transform: translate(-50%, -50%) rotateX(65deg);
-  animation: spin1 6s linear infinite;
-  box-shadow: 0 0 12px #00eaff;
+border-color: #00eaff;
+box-shadow:
+0 0 10px #00eaff,
+0 0 22px rgba(0, 234, 255, 0.45);
+animation: orbitOne 6s linear infinite;
 }
 
-/* Orbit 2 */
+/* =========================
+RING 2
+Different 3D direction
+========================= */
+
 .orbit2 {
-  border-top: 2px solid #4d9fff;
-  border-right: 2px solid #4d9fff;
-  transform: translate(-50%, -50%) rotateY(65deg);
-  animation: spin2 10s linear infinite;
-  box-shadow: 0 0 12px #4d9fff;
+border-color: #4d9fff;
+box-shadow:
+0 0 10px #4d9fff,
+0 0 22px rgba(77, 159, 255, 0.4);
+animation: orbitTwo 9s linear infinite;
 }
 
-/* Orbit 3 */
+/* =========================
+RING 3
+Different orientation
+========================= */
+
 .orbit3 {
-  border-bottom: 2px solid #7df9ff;
-  border-left: 2px solid #7df9ff;
-  transform: translate(-50%, -50%);
-  animation: spin3 14s linear infinite;
-  box-shadow: 0 0 10px #7df9ff;
+border-color: #7df9ff;
+box-shadow:
+0 0 10px #7df9ff,
+0 0 22px rgba(125, 249, 255, 0.4);
+animation: orbitThree 12s linear infinite;
 }
 
-/* Animations */
-@keyframes spin1 {
-  from {
-    transform: translate(-50%, -50%) rotateX(65deg) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotateX(65deg) rotate(360deg);
-  }
+/* =========================
+3D RING MOVEMENT
+========================= */
+
+@keyframes orbitOne {
+0% {
+transform: rotateY(0deg) rotateX(65deg);
 }
 
-@keyframes spin2 {
-  from {
-    transform: translate(-50%, -50%) rotateY(65deg) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotateY(65deg) rotate(360deg);
-  }
+100% {
+transform: rotateY(360deg) rotateX(65deg);
+}
 }
 
-@keyframes spin3 {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
+@keyframes orbitTwo {
+0% {
+transform: rotateX(0deg) rotateY(65deg);
 }
+
+100% {
+transform: rotateX(360deg) rotateY(65deg);
+}
+}
+
+@keyframes orbitThree {
+0% {
+transform: rotateX(0deg) rotateY(25deg);
+}
+
+100% {
+transform: rotateX(360deg) rotateY(25deg);
+}
+}
+
+/* =========================
+ORBIT GLOW DOTS
+========================= */
+
 .orbit-dot {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
+position: absolute;
+width: 8px;
+height: 8px;
+border-radius: 50%;
+top: -5px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 10;
 }
 
 .dot1 {
-  background: #00eaff;
-  box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+background: #00eaff;
+box-shadow:
+0 0 10px #00eaff,
+0 0 20px #00eaff;
 }
 
 .dot2 {
-  background: #4d9fff;
-  box-shadow: 0 0 10px #4d9fff, 0 0 20px #4d9fff;
+background: #4d9fff;
+box-shadow:
+0 0 10px #4d9fff,
+0 0 20px #4d9fff;
 }
 
 .dot3 {
-  background: #7df9ff;
-  box-shadow: 0 0 10px #7df9ff, 0 0 20px #7df9ff;
+background: #7df9ff;
+box-shadow:
+0 0 10px #7df9ff,
+0 0 20px #7df9ff;
+}
+
+/* =========================
+TABLET
+========================= */
+
+@media (max-width: 768px) {
+.planet-scene {
+height: 210px;
+}
+
+.planet-wrapper {
+width: 190px;
+height: 190px;
+}
+
+.planet-core {
+width: 120px;
+height: 120px;
+}
+
+.orbit {
+width: 175px;
+height: 175px;
+margin-left: -87.5px;
+margin-top: -87.5px;
+}
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media (max-width: 600px) {
+.planet-scene {
+height: 180px;
+}
+
+.planet-wrapper {
+width: 165px;
+height: 165px;
+}
+
+.planet-core {
+width: 105px;
+height: 105px;
+}
+
+.orbit {
+width: 150px;
+height: 150px;
+margin-left: -75px;
+margin-top: -75px;
+border-width: 1.5px;
+}
+
+.orbit-dot {
+width: 7px;
+height: 7px;
+}
+}
+
+/* =========================
+VERY SMALL PHONES
+========================= */
+
+@media (max-width: 380px) {
+.planet-scene {
+height: 160px;
+}
+
+.planet-wrapper {
+width: 145px;
+height: 145px;
+}
+
+.planet-core {
+width: 95px;
+height: 95px;
+}
+
+.orbit {
+width: 132px;
+height: 132px;
+margin-left: -66px;
+margin-top: -66px;
+}
 }

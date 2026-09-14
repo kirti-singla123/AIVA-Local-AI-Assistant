@@ -1,22 +1,22 @@
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   background: url("./assets/space-bg.png") no-repeat center center fixed;
   background-size: cover;
   color: white;
-    overflow-x: hidden;   /* prevents horizontal scroll */
-
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .app {
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-    overflow: visible;   /* prevents vertical overflow */
-
+  overflow: hidden;
 }
 
-.header {
+.aiva-header {
   text-align: center;
   font-size: 30px;
   letter-spacing: 6px;
@@ -24,9 +24,10 @@ body {
   font-weight: 600;
   color: #6bd6ff;
   text-shadow: 0 0 20px #00f5ff;
+  flex-shrink: 0;
 }
 
-.header::after {
+.aiva-header::after {
   content: "";
   display: block;
   width: 60%;
@@ -37,32 +38,38 @@ body {
 }
 
 .main-layout {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+flex: 1;
+width: 100%;
+min-width: 0;
+min-height: 0;
+display: flex;
+justify-content: center;
+align-items: center;
+box-sizing: border-box;
+padding: 20px 6vw 40px;
 }
+
+
 .ai-orb {
   position: relative;
-  width: 140px;
-  height: 140px;
-  margin-bottom: 30px;
-
+  width: 170px;
+  height: 170px;
+  margin-bottom: 50px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,
+  background: radial-gradient(
+    circle at 30% 30%,
     #ff4dff,
     #6b2bff 60%,
     #001133
   );
-
   box-shadow:
     0 0 25px #ff4dff,
     0 0 60px #6b2bff;
-
   animation: float 5s ease-in-out infinite;
 }
 
 /* Orbit Rings */
+
 .ring {
   position: absolute;
   width: 180px;
@@ -87,14 +94,152 @@ body {
 }
 
 /* Floating effect */
+
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 /* Rotation */
+
 @keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .aiva-header {
+    font-size: 26px;
+    padding: 18px 0;
+    letter-spacing: 5px;
+  }
+
+  .aiva-header::after {
+    width: 70%;
+    margin-top: 8px;
+  }
+
+  .main-layout {
+    padding: 0 10px 10px;
+    box-sizing: border-box;
+  }
+
+  .ai-orb {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 25px;
+  }
+
+  .ring {
+    width: 155px;
+    height: 155px;
+    top: -18px;
+    left: -18px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 600px) {
+  body {
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-attachment: scroll;
+  }
+
+  .app {
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .aiva-header {
+    width: 100%;
+    font-size: 22px;
+    letter-spacing: 4px;
+    padding: 14px 0 10px;
+    box-sizing: border-box;
+  }
+
+  .aiva-header::after {
+    width: 65%;
+    margin-top: 7px;
+  }
+
+  .main-layout {
+    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0 8px 8px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .ai-orb {
+    width: 105px;
+    height: 105px;
+    margin-bottom: 18px;
+  }
+
+  .ring {
+    width: 135px;
+    height: 135px;
+    top: -16px;
+    left: -16px;
+  }
+}
+
+/* =========================
+   VERY SMALL PHONES
+========================= */
+
+@media (max-width: 380px) {
+  .aiva-header {
+    font-size: 20px;
+    padding: 12px 0 8px;
+  }
+
+  .main-layout {
+    padding: 0 6px 6px;
+  }
+
+  .ai-orb {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 15px;
+  }
+
+  .ring {
+    width: 118px;
+    height: 118px;
+    top: -14px;
+    left: -14px;
+  }
 }
