@@ -1,18 +1,24 @@
 import React from "react";
 import "./CallOrb.css";
 
-const BAR_COUNT = 40; // number of bars across the full screen
-
 export default function CallOrb({ status }) {
   return (
     <div className={`call-orb-wrapper ${status}`}>
-      <div className="wave-row">
-        {Array.from({ length: BAR_COUNT }).map((_, i) => (
-          <span key={i} style={{ animationDelay: `${(i % 10) * 0.1}s` }}></span>
-        ))}
-      </div>
+      {/* Expanding sound waves — visible only while AIVA is speaking */}
+      <div className="sound-wave wave-1"></div>
+      <div className="sound-wave wave-2"></div>
+      <div className="sound-wave wave-3"></div>
+      <div className="sound-wave wave-4"></div>
 
-      <div className="call-orb-core"></div>
+      {/* 3D orbital rings */}
+      <div className="voice-orbit voice-orbit-1"></div>
+      <div className="voice-orbit voice-orbit-2"></div>
+      <div className="voice-orbit voice-orbit-3"></div>
+
+      {/* AIVA planet */}
+      <div className="call-orb-core">
+        <div className="call-orb-inner"></div>
+      </div>
     </div>
   );
 }
