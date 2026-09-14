@@ -4,7 +4,13 @@
 
 The project started as a locally running AI assistant using **Ollama and a local LLM** and has evolved into a **Retrieval-Augmented Generation (RAG) based AI assistant** capable of answering questions using information retrieved from documents.
 
-🚀 Live Demo: https://aiva-local-ai-assistant.netlify.app/
+## 🚀 Live Demo
+
+**Frontend:** https://aiva-local-ai-assistant.netlify.app/
+
+**Backend API:** https://aiva-backend-tilu.onrender.com/chat/
+
+The frontend is deployed on Netlify and communicates with the Django backend deployed on Render.
 
 ---
 
