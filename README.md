@@ -457,8 +457,6 @@ groq
 gunicorn
 ```
 
-The `FastEmbed for embeddings--> BAAI/bge-small-en-v1.5` model is loaded by the Python application through Sentence Transformers.
-
 ---
 
 # 🎯 Project Goals
@@ -521,7 +519,7 @@ Add screenshots showing questions being answered using information retrieved fro
 
 AIVA initially used **Ollama with the Gemma 3.4B model** for local LLM inference.
 
-The architecture was later upgraded to use the **Groq API for LLM inference** and **FastEmbed with the BAAI/bge-small-en-v1.5` model for embeddings**.
+The architecture was later upgraded to use the **Groq API for LLM inference** and **FastEmbed with the BAAI/bge-small-en-v1.5 model for embeddings**.
 
 ### Technology Evolution
 
@@ -536,11 +534,11 @@ Ollama + Nomic Embedding Model
         ↓
 Sentence Transformers + all-MiniLM-L6-v2
         ↓
-FastEmbed + BAAI/bge-small-en-v1.5```
+FastEmbed + BAAI/bge-small-en-v1.5
 
 The embedding system was upgraded from Sentence Transformers to FastEmbed to reduce memory and dependency overhead and make the RAG pipeline more suitable for cloud deployment on limited resources.
 
-This evolution transformed AIVA from a locally hosted AI chatbot into a **RAG-based full-stack AI application**.
+This evolution transformed AIVA from a locally hosted AI chatbot into a **RAG-based full-stack AI application**.```
 
 
 # 👩‍💻 Author
