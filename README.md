@@ -501,15 +501,21 @@ Possible future enhancements include:
 
 # 📸 Screenshots
 
-## Chat Interface
+## 1. Main AIVA Interface
 
-![Chat Interface](Screenshots/Aiva_chatbot.PNG)
+![Main AIVA Interface](Screenshots/1Main%20Chat%20Interface.png)
 
-#### Example Conversation
-![Example Conversation](Screenshots/Conversation.PNG)
+## 2. General Conversation
 
-#### Another Example
-![Conversation 1](Screenshots/conversation1.PNG)
+![General Conversation](Screenshots/AI%20Capabilities2.png)
+
+## 3. RAG Question Answering
+
+![RAG Question](Screenshots/RAG%20Question.png)
+
+## 4. Voice Interaction
+
+![Voice Interaction](Screenshots/Voice%20Interaction.png)
 
 ## RAG Question Answering
 
