@@ -16,8 +16,8 @@ The project started as a locally running AI assistant using **Ollama and a local
 * ✅ PDF document processing
 * ✅ Automatic text extraction from PDFs
 * ✅ Text chunking for document processing
-* ✅ Semantic embeddings using **Sentence Transformers**
-* ✅ `all-MiniLM-L6-v2` embedding model
+* ✅ Semantic embeddings using **FastEmbed**
+* ✅ BAAI/bge-small-en-v1.5 embedding model
 * ✅ Local vector database implementation
 * ✅ Cosine similarity based semantic search
 * ✅ Retrieves relevant document chunks before generating an answer
@@ -56,8 +56,10 @@ PDF Text Extraction
      ↓
 Text Chunking
      ↓
-all-MiniLM-L6-v2
-     ↓
+FastEmbed
+        ↓
+BAAI/bge-small-en-v1.5
+        ↓
 Vector Embeddings
      ↓
 Vector Database
@@ -78,8 +80,10 @@ React Frontend
      ↓
 Django Backend
      ↓
-all-MiniLM-L6-v2
-     ↓
+FastEmbed
+        ↓
+BAAI/bge-small-en-v1.5
+        ↓
 Question Embedding
      ↓
 Cosine Similarity Search
@@ -122,8 +126,8 @@ The **same embedding model** (`all-MiniLM-L6-v2`) is used for both document chun
 * Retrieval-Augmented Generation (RAG)
 * Groq API
 * Sentence Transformers
-* `all-MiniLM-L6-v2`
-* Vector embeddings
+* FastEmbed
+* BAAI/bge-small-en-v1.5
 * Cosine similarity
 * Local vector database
 * PDF text extraction using `pypdf`
@@ -169,8 +173,8 @@ The project was later enhanced to use a RAG architecture with **Sentence Transfo
                                │
                                ↓
                     ┌─────────────────────┐
-                    │ Sentence Transformer│
-                    │ all-MiniLM-L6-v2    │
+                    │ FastEmbed           │
+                    │ BAAI/bge-small-en-v1.5│
                     └──────────┬──────────┘
                                │
                                ↓
@@ -213,9 +217,9 @@ PDF
 The application uses:
 
 ```text
-Sentence Transformers
+FastEmbed
         +
-all-MiniLM-L6-v2
+BAAI/bge-small-en-v1.5
 ```
 
 to generate numerical vector representations of text.
@@ -434,8 +438,8 @@ Django Backend
       ↓
    Render
       ↓
-Sentence Transformers
-all-MiniLM-L6-v2
+FastEmbed
+BAAI/bge-small-en-v1.5
       ↓
 Vector Database
       ↓
@@ -448,8 +452,7 @@ The backend uses `requirements.txt` to install the required Python dependencies,
 
 ```text
 Django
-sentence-transformers
-torch
+fastembed
 pypdf
 groq
 gunicorn
@@ -533,7 +536,10 @@ Embeddings:
 Ollama + Nomic Embedding Model
         ↓
 Sentence Transformers + all-MiniLM-L6-v2
-```
+        ↓
+FastEmbed + BAAI/bge-small-en-v1.5```
+
+The embedding system was upgraded from Sentence Transformers to FastEmbed to reduce memory and dependency overhead and make the RAG pipeline more suitable for cloud deployment on limited resources.
 
 This evolution transformed AIVA from a locally hosted AI chatbot into a **RAG-based full-stack AI application**.
 
@@ -550,7 +556,7 @@ Full Stack Developer
 
 ## 🏷️ Keywords
 
-**AI, Artificial Intelligence, Chatbot, LLM, RAG, Retrieval-Augmented Generation, Vector Database, Embeddings, Semantic Search, Sentence Transformers, all-MiniLM-L6-v2, Groq, Django, Django REST Framework, React, Python, Full Stack Development, AI Application, Document Q&A**
+**AI, Artificial Intelligence, Chatbot, LLM, RAG, Retrieval-Augmented Generation, Vector Database, Embeddings, Semantic Search, FastEmbed + BAAI/bge-small-en-v1.5, Groq, Django, Django REST Framework, React, Python, Full Stack Development, AI Application, Document Q&A**
 
 ---
 
