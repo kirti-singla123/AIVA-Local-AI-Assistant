@@ -99,7 +99,7 @@ AI Answer
 React Frontend
 ```
 
-The **same embedding model** (`all-MiniLM-L6-v2`) is used for both document chunks and user questions so they exist in the same embedding space.
+The **same embedding model** (`BAAI/bge-small-en-v1.5`) is used for both document chunks and user questions so they exist in the same embedding space.
 
 ---
 
@@ -125,7 +125,6 @@ The **same embedding model** (`all-MiniLM-L6-v2`) is used for both document chun
 
 * Retrieval-Augmented Generation (RAG)
 * Groq API
-* Sentence Transformers
 * FastEmbed
 * BAAI/bge-small-en-v1.5
 * Cosine similarity
@@ -140,7 +139,7 @@ The initial version of AIVA used:
 * Local LLM
 * Local AI processing
 
-The project was later enhanced to use a RAG architecture with **Sentence Transformers for embeddings** and **Groq for LLM inference**.
+The project was later enhanced to use a RAG architecture with **FastEmbed for embeddings** and **Groq for LLM inference**.
 
 ## Tools
 
@@ -427,7 +426,7 @@ The application then:
 
 # ☁️ Deployment
 
-The planned deployment architecture is:
+The deployment architecture is:
 
 ```text
 React Frontend
@@ -458,7 +457,7 @@ groq
 gunicorn
 ```
 
-The `all-MiniLM-L6-v2` model is loaded by the Python application through Sentence Transformers.
+The `FastEmbed for embeddings--> BAAI/bge-small-en-v1.5` model is loaded by the Python application through Sentence Transformers.
 
 ---
 
@@ -522,7 +521,7 @@ Add screenshots showing questions being answered using information retrieved fro
 
 AIVA initially used **Ollama with the Gemma 3.4B model** for local LLM inference.
 
-The architecture was later upgraded to use the **Groq API for LLM inference** and **Sentence Transformers with the `all-MiniLM-L6-v2` model for embeddings**.
+The architecture was later upgraded to use the **Groq API for LLM inference** and **FastEmbed with the BAAI/bge-small-en-v1.5` model for embeddings**.
 
 ### Technology Evolution
 
