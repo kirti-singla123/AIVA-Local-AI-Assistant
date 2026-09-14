@@ -422,12 +422,13 @@ box-sizing: border-box;
   }
 
   .chat-input {
-    width: 100%;
-    margin-top: auto;
-    padding-top: 12px;
-    gap: 6px;
-    flex-shrink: 0;
-  }
+  width: 100%;
+  margin-top: auto;
+  padding-top: 12px;
+  padding-bottom: 55px;
+  gap: 6px;
+  flex-shrink: 0;
+}
 
   .chat-input input {
     min-width: 0;
