@@ -9,8 +9,8 @@ def get_model():
     global model
 
     if model is None:
-        from sentence_transformers import SentenceTransformer
-        model = SentenceTransformer("all-MiniLM-L6-v2")
+        from fastembed import TextEmbedding
+        model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
     return model
 
@@ -37,7 +37,7 @@ def chunk_text(text, lines_per_chunk=5):
 
 
 def get_embedding(text):
-    return get_model().encode(text).tolist()
+    return list(get_model().embed([text]))[0].tolist()
 
 
 if __name__ == "__main__":
