@@ -16,136 +16,106 @@ function ChatPanel() {
   const [callStatus, setCallStatus] = useState("idle");
 
   const callActiveRef = useRef(false);
-  const recognitionRef = useRef(null);
-  const recognitionTimeoutRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
 
   /* =========================
-     🎤 GET SPEECH RECOGNITION
+     🎤 RECORD MICROPHONE AUDIO
   ========================== */
-  const getSpeechRecognition = () => {
-    return window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recordAudio = async (duration = 5000) => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+
+      return new Promise((resolve, reject) => {
+        const recorder = new MediaRecorder(stream);
+
+        mediaRecorderRef.current = recorder;
+        audioChunksRef.current = [];
+
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        recorder.onstop = () => {
+          stream.getTracks().forEach((track) => track.stop());
+
+          const audioBlob = new Blob(audioChunksRef.current, {
+            type: recorder.mimeType || "audio/webm",
+          });
+
+          mediaRecorderRef.current = null;
+          resolve(audioBlob);
+        };
+
+        recorder.onerror = (event) => {
+          stream.getTracks().forEach((track) => track.stop());
+          mediaRecorderRef.current = null;
+          reject(event.error || new Error("Microphone recording failed."));
+        };
+
+        recorder.start();
+
+        setTimeout(() => {
+          if (recorder.state === "recording") {
+            recorder.stop();
+          }
+        }, duration);
+      });
+    } catch (error) {
+      console.error("Microphone error:", error);
+      throw error;
+    }
   };
 
   /* =========================
-     🧹 CLEAN UP RECOGNITION
+     🎤 SEND AUDIO FOR TRANSCRIPTION
   ========================== */
-  const stopRecognition = () => {
-    if (recognitionTimeoutRef.current) {
-      clearTimeout(recognitionTimeoutRef.current);
-      recognitionTimeoutRef.current = null;
-    }
+  const transcribeAudio = async (audioBlob) => {
+    const formData = new FormData();
 
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.abort();
-      } catch (error) {
-        console.log("Recognition cleanup:", error);
+    formData.append("audio", audioBlob, "aiva-recording.webm");
+
+    const response = await fetch(
+      "https://aiva-backend-tilu.onrender.com/transcribe/",
+      {
+        method: "POST",
+        body: formData,
       }
+    );
 
-      recognitionRef.current = null;
+    if (!response.ok) {
+      throw new Error(`Transcription error: ${response.status}`);
     }
+
+    const data = await response.json();
+
+    return data.text;
   };
 
   /* =========================
      🎤 NORMAL VOICE INPUT
   ========================== */
-  const startListening = () => {
-    const SpeechRecognition = getSpeechRecognition();
-
-    if (!SpeechRecognition) {
-      alert(
-        "Speech recognition is not supported on this browser. Please try Chrome."
-      );
-      return;
-    }
-
-    // Stop any previous recognition session
-    stopRecognition();
-
-    const recognition = new SpeechRecognition();
-
-    recognitionRef.current = recognition;
-
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      console.log("🎤 Speech recognition started");
-      setIsListening(true);
-    };
-
-    recognition.onresult = (event) => {
-      console.log("🎤 Speech result received");
-
-      const transcript = event.results[0][0].transcript;
-
-      console.log("Transcript:", transcript);
-
-      setInput(transcript);
-      setIsListening(false);
-    };
-
-    recognition.onerror = (event) => {
-      console.error("🎤 Speech recognition error:", event.error);
-
-      setIsListening(false);
-
-      if (event.error === "not-allowed") {
-        alert(
-          "Microphone permission was denied. Please allow microphone access for AIVA."
-        );
-      } else if (event.error === "network") {
-        alert(
-          "Speech recognition could not connect. Please check your internet connection and try again."
-        );
-      } else if (event.error === "no-speech") {
-        console.log("No speech detected.");
-      }
-    };
-
-    recognition.onend = () => {
-      console.log("🎤 Speech recognition ended");
-
-      setIsListening(false);
-
-      if (recognitionRef.current === recognition) {
-        recognitionRef.current = null;
-      }
-
-      if (recognitionTimeoutRef.current) {
-        clearTimeout(recognitionTimeoutRef.current);
-        recognitionTimeoutRef.current = null;
-      }
-    };
-
-    // Prevent mobile from staying stuck forever
-    recognitionTimeoutRef.current = setTimeout(() => {
-      console.log("🎤 Speech recognition timeout");
-
-      if (recognitionRef.current === recognition) {
-        try {
-          recognition.abort();
-        } catch (error) {
-          console.log("Timeout cleanup:", error);
-        }
-
-        recognitionRef.current = null;
-        setIsListening(false);
-
-        alert("Voice recognition took too long. Please try again.");
-      }
-    }, 10000);
+  const startListening = async () => {
+    if (isListening) return;
 
     try {
-      console.log("🎤 Starting speech recognition...");
-      recognition.start();
-    } catch (error) {
-      console.error("🎤 Could not start recognition:", error);
+      setIsListening(true);
 
+      const audioBlob = await recordAudio(5000);
+
+      const transcript = await transcribeAudio(audioBlob);
+
+      if (transcript && transcript.trim()) {
+        setInput(transcript);
+      }
+    } catch (error) {
+      console.error("Voice input error:", error);
+    } finally {
       setIsListening(false);
-      recognitionRef.current = null;
     }
   };
 
@@ -255,47 +225,28 @@ function ChatPanel() {
 
   /* =========================
      📞 CALL MODE
-     listen → AI → speak → listen
+     record → transcribe → AI → speak → repeat
   ========================== */
-  const listenOnceForCall = () => {
+  const listenOnceForCall = async () => {
     if (!callActiveRef.current) return;
 
-    const SpeechRecognition = getSpeechRecognition();
+    try {
+      setCallStatus("listening");
 
-    if (!SpeechRecognition) {
-      alert(
-        "Speech recognition is not supported on this browser. Please try Chrome."
-      );
-      endCall();
-      return;
-    }
+      const audioBlob = await recordAudio(5000);
 
-    // Make sure an old recognition session is not still running
-    stopRecognition();
-
-    const recognition = new SpeechRecognition();
-
-    recognitionRef.current = recognition;
-
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      console.log("📞 Call listening started");
-
-      if (callActiveRef.current) {
-        setCallStatus("listening");
-      }
-    };
-
-    recognition.onresult = async (event) => {
       if (!callActiveRef.current) return;
 
-      const transcript = event.results[0][0].transcript;
+      setCallStatus("thinking");
 
-      console.log("📞 Call transcript:", transcript);
+      const transcript = await transcribeAudio(audioBlob);
+
+      if (!callActiveRef.current) return;
+
+      if (!transcript || !transcript.trim()) {
+        listenOnceForCall();
+        return;
+      }
 
       setMessages((prev) => [
         ...prev,
@@ -305,113 +256,34 @@ function ChatPanel() {
         },
       ]);
 
-      setCallStatus("thinking");
+      const aiReply = await getAIReply(transcript);
 
-      try {
-        const aiReply = await getAIReply(transcript);
+      if (!callActiveRef.current) return;
 
-        if (!callActiveRef.current) return;
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "ai",
+          text: aiReply,
+        },
+      ]);
 
-        setMessages((prev) => [
-          ...prev,
-          {
-            sender: "ai",
-            text: aiReply,
-          },
-        ]);
+      await speakText(aiReply);
 
-        await speakText(aiReply);
-      } catch (error) {
-        console.error("📞 Call AI error:", error);
-
-        if (callActiveRef.current) {
-          await speakText("Sorry, I had trouble connecting.");
-        }
-      }
-
-      // Start a fresh listening session
       if (callActiveRef.current) {
+        listenOnceForCall();
+      }
+    } catch (error) {
+      console.error("📞 Call voice error:", error);
+
+      if (callActiveRef.current) {
+        setCallStatus("listening");
+
         setTimeout(() => {
           if (callActiveRef.current) {
             listenOnceForCall();
           }
-        }, 300);
-      }
-    };
-
-    recognition.onerror = (event) => {
-      console.error("📞 Call speech error:", event.error);
-
-      if (!callActiveRef.current) return;
-
-      // Stop infinite retry loops for permission/network errors
-      if (
-        event.error === "not-allowed" ||
-        event.error === "service-not-allowed"
-      ) {
-        alert(
-          "Microphone permission is required for the call. Please allow microphone access for AIVA."
-        );
-        endCall();
-        return;
-      }
-
-      if (event.error === "network") {
-        alert(
-          "Voice connection failed. Please check your internet connection and try again."
-        );
-        endCall();
-        return;
-      }
-
-      // For temporary errors/no speech, try again
-      setTimeout(() => {
-        if (callActiveRef.current) {
-          listenOnceForCall();
-        }
-      }, 500);
-    };
-
-    recognition.onend = () => {
-      console.log("📞 Call recognition ended");
-
-      if (recognitionRef.current === recognition) {
-        recognitionRef.current = null;
-      }
-
-      if (recognitionTimeoutRef.current) {
-        clearTimeout(recognitionTimeoutRef.current);
-        recognitionTimeoutRef.current = null;
-      }
-    };
-
-    // Prevent "Starting..." from remaining forever
-    recognitionTimeoutRef.current = setTimeout(() => {
-      if (!callActiveRef.current) return;
-
-      console.log("📞 Call recognition timeout");
-
-      try {
-        recognition.abort();
-      } catch (error) {
-        console.log("Call timeout cleanup:", error);
-      }
-
-      recognitionRef.current = null;
-
-      alert("Voice recognition took too long. Please try the call again.");
-
-      endCall();
-    }, 10000);
-
-    try {
-      console.log("📞 Starting call speech recognition...");
-      recognition.start();
-    } catch (error) {
-      console.error("📞 Could not start call recognition:", error);
-
-      if (callActiveRef.current) {
-        endCall();
+        }, 500);
       }
     }
   };
@@ -420,13 +292,10 @@ function ChatPanel() {
      📞 START CALL
   ========================== */
   const startCall = () => {
-    stopRecognition();
-
     setCallMode(true);
     callActiveRef.current = true;
     setMessages([]);
 
-    // Give React a moment to render call mode
     setTimeout(() => {
       if (callActiveRef.current) {
         listenOnceForCall();
@@ -440,10 +309,19 @@ function ChatPanel() {
   const endCall = () => {
     callActiveRef.current = false;
 
-    stopRecognition();
+    if (mediaRecorderRef.current) {
+      try {
+        mediaRecorderRef.current.stop();
+      } catch (error) {
+        console.log("Recorder cleanup:", error);
+      }
+
+      mediaRecorderRef.current = null;
+    }
 
     setCallMode(false);
     setCallStatus("idle");
+    setIsListening(false);
 
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();

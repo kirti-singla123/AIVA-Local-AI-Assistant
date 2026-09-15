@@ -1,19 +1,19 @@
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
 from django.conf import settings
 from groq import Groq
 import json
-import requests
+
 from chat.memory_rag.vector_db import SimpleVectorDB
 from chat.memory_rag.pipeline import get_embedding
 
 rag_db = SimpleVectorDB()
 rag_db.load("chat/memory_rag/vector_store.json")
 
-# ✅ Set this to True to use local Ollama, False to use Groq API
+# Set this to True to use local Ollama, False to use Groq API
 USE_LOCAL_OLLAMA = False
+
 
 @csrf_exempt
 def chat_view(request):
@@ -32,12 +32,15 @@ Answer with only one word: yes or no.
 
 Question: {question}
 """
-        
+
         classify_response = client.chat.completions.create(
             messages=[{"role": "user", "content": classify_prompt}],
             model="openai/gpt-oss-120b",
         )
-        is_resume_related = classify_response.choices[0].message.content.strip().lower()
+
+        is_resume_related = (
+            classify_response.choices[0].message.content.strip().lower()
+        )
 
         # Step 2: Route based on classification
         if "yes" in is_resume_related:
@@ -59,7 +62,6 @@ Respond in a clear, natural, and professional tone.
 Do NOT use emojis, exclamation marks, or overly casual/affectionate language.
 Do NOT mention current date or time unless the user asks.
 
-
 User: {question}
 Assistant:
 """
@@ -68,11 +70,52 @@ Assistant:
             messages=[{"role": "user", "content": prompt}],
             model="openai/gpt-oss-120b",
         )
+
         ai_reply = chat_completion.choices[0].message.content.strip()
 
         return JsonResponse({"response": ai_reply})
 
     return JsonResponse({"error": "Only POST allowed"})
+
+
+# ============================================================
+# 🎤 SPEECH-TO-TEXT
+# ============================================================
+
+@csrf_exempt
+def transcribe_view(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Only POST allowed"}, status=405)
+
+    if "audio" not in request.FILES:
+        return JsonResponse(
+            {"error": "No audio file received"},
+            status=400,
+        )
+
+    audio_file = request.FILES["audio"]
+
+    try:
+        client = Groq(api_key=settings.GROQ_API_KEY)
+
+        transcription = client.audio.transcriptions.create(
+            file=(audio_file.name, audio_file.read()),
+            model="whisper-large-v3-turbo",
+            response_format="json",
+            language="en",
+        )
+
+        return JsonResponse({
+            "text": transcription.text
+        })
+
+    except Exception as error:
+        print("Speech-to-text error:", error)
+
+        return JsonResponse(
+            {"error": "Speech transcription failed"},
+            status=500,
+        )
 
 
 def home(request):
@@ -123,9 +166,10 @@ def home(request):
             <p>This backend currently handles:</p>
             <ul>
                 <li>Chat handling</li>
+                <li>Speech-to-text transcription</li>
                 <li>API endpoints for connected frontend apps</li>
             </ul>
-            <p><span class="highlight">frontend Connected:</span> React App</p>
+            <p><span class="highlight">Frontend Connected:</span> React App</p>
             <p><span class="highlight">Developed by:</span> Kirti Singla</p>
             <p><span class="highlight">Status:</span> Active & Running</p>
         </div>

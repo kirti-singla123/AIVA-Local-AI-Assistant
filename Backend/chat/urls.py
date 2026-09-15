@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import chat_view, home
+
+from .views import chat_view, home, transcribe_view
 
 
 urlpatterns = [
-    path('chat/', chat_view, name='chat'),
-    path('', home),  # <-- root URL
-
+    path("chat/", chat_view, name="chat"),
+    path("transcribe/", transcribe_view, name="transcribe"),
+    path("", home),
 ]
